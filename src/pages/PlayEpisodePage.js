@@ -28,7 +28,7 @@ import  * as Pods from '../actions/pods';
 import CheckoutFooter from '../components/CheckoutFooter';
 import Scanner from '../components/Scanner';
 
-class MeditationPage extends Component {
+class PlayEpisodePage extends Component {
     static navigationOptions = {
         title: 'Shows',
     };
@@ -41,8 +41,6 @@ class MeditationPage extends Component {
   componentWillMount() {
 
   }
-
-
 
   render() {
 
@@ -112,4 +110,4 @@ const mapDispatchToProps = (dispatch) => {
   }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeditationPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PlayEpisodePage);
