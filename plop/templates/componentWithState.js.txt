@@ -1,0 +1,21 @@
+// plop v1 
+import React, { Component } from 'react';
+
+import './{{ camelCase fileName}}.css';
+
+class {{ properCase fileName }} extends Component {
+    render() {
+        const {
+            className,
+        } = this.props;
+        
+        return (
+            <div 
+                className={`{{ dashCase fileName}} ${className || ''}`}
+            >
+            </div>
+        )
+    }
+}
+
+export default {{ properCase fileName }};

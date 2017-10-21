@@ -1,0 +1,18 @@
+// plop v1 
+import React from 'react';
+import './{{ camelCase fileName}}.css';
+
+const {{ properCase fileName}} = props => {
+    const {
+        className,
+    } = props;
+    
+    return (
+        <div 
+            className={`{{ dashCase fileName}} ${className || ''}`}
+        >
+        </div>
+    )
+}
+
+export default {{properCase fileName}};
