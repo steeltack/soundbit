@@ -26,7 +26,6 @@ import { connect } from 'react-redux';
 import  * as Pods from '../actions/pods';
 
 import CheckoutFooter from '../components/CheckoutFooter';
-import Scanner from '../components/Scanner';
 
 class PlayEpisodePage extends Component {
     static navigationOptions = {

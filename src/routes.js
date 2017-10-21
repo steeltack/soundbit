@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import ScannerPage from './pages/ScannerPage';
+import PlayEpisodePage from './pages/PlayEpisodePage';
 import CheckoutPage from './pages/CheckoutPage';
 import ItemsList from './pages/ItemsList';
 import { BottomNavigation } from 'react-native-material-ui';
@@ -14,7 +14,7 @@ import {
 } from 'react-navigation';
 
 export default App = TabNavigator({
-    Main: {screen: ScannerPage},
+    Main: {screen: PlayEpisodePage},
     Checkout: {screen: CheckoutPage},
     ItemsList: {screen: ItemsList}
 },
@@ -40,7 +40,7 @@ export default App = TabNavigator({
 
     getView() {
         return {
-            Main: <ScannerPage />,
+            Main: <PlayEpisodePage />,
             Checkout: <CheckoutPage />,
             ItemsList: <ItemsList />
         }
