@@ -26,6 +26,7 @@ import { connect } from 'react-redux';
 import  * as Pods from '../actions/pods';
 
 import CheckoutFooter from '../components/CheckoutFooter';
+import { Player } from 'react-native-audio-streaming';
 
 class PlayEpisodePage extends Component {
     static navigationOptions = {
@@ -45,7 +46,7 @@ class PlayEpisodePage extends Component {
 
     return (
       <View style={styles.container}>
-
+         <Player url={"http://lacavewebradio.chickenkiller.com:8000/stream.mp3"} />
       </View>
     );
   }
