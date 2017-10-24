@@ -24,8 +24,8 @@
 		175A323F1EBCFDF000793847 /* ReactProjectTests in Resources */ = {isa = PBXBuildFile; fileRef = 175A323E1EBCFDF000793847 /* ReactProjectTests */; };
 		175E2B121EC1337500532514 /* tenItemsOrLess.png in Resources */ = {isa = PBXBuildFile; fileRef = 175E2B111EC1337500532514 /* tenItemsOrLess.png */; };
 		175E2B2F1EC133B800532514 /* tenItemsOrLess.png in Resources */ = {isa = PBXBuildFile; fileRef = 175E2B2E1EC133B800532514 /* tenItemsOrLess.png */; };
+		176C8F3E1F9FBD6A001C74B8 /* libReactNativeAudioStreaming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 176C8F3D1F9FBD55001C74B8 /* libReactNativeAudioStreaming.a */; };
 		17DFFE991F9CC1F500EE14F5 /* libStreamingKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DFFE771F9CC15300EE14F5 /* libStreamingKit.a */; };
-		17DFFE9A1F9CC20000EE14F5 /* libPods-ReactNativeAudioStreaming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DFFE751F9CC15300EE14F5 /* libPods-ReactNativeAudioStreaming.a */; };
 		21A258A4ADB845C1B6D8ED06 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B76F65B4CBC40708ABF7111 /* libRCTCamera.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -161,6 +161,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
 			remoteInfo = "double-conversion-tvOS";
+		};
+		176C8F3C1F9FBD55001C74B8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 176C8F161F9FBD54001C74B8 /* ReactNativeAudioStreaming.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = ReactNativeAudioStreaming;
 		};
 		17DFFE741F9CC15300EE14F5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -326,6 +333,7 @@
 		175A323E1EBCFDF000793847 /* ReactProjectTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ReactProjectTests; sourceTree = "<group>"; };
 		175E2B111EC1337500532514 /* tenItemsOrLess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tenItemsOrLess.png; path = ReactProject/Images.xcassets/tenItemsOrLess.png; sourceTree = "<group>"; };
 		175E2B2E1EC133B800532514 /* tenItemsOrLess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tenItemsOrLess.png; path = ../../../../tenItemsOrLess.png; sourceTree = "<group>"; };
+		176C8F161F9FBD54001C74B8 /* ReactNativeAudioStreaming.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeAudioStreaming.xcodeproj; path = "../../react-native-audio-streaming/Example/node_modules/react-native-audio-streaming/ios/ReactNativeAudioStreaming.xcodeproj"; sourceTree = "<group>"; };
 		17DFFE6F1F9CC15300EE14F5 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = "../node_modules/react-native-audio-streaming/ios/Pods/Pods.xcodeproj"; sourceTree = "<group>"; };
 		29C6D09F3B944292AC8D4FC2 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* ReactProject-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ReactProject-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -349,7 +357,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17DFFE9A1F9CC20000EE14F5 /* libPods-ReactNativeAudioStreaming.a in Frameworks */,
+				176C8F3E1F9FBD6A001C74B8 /* libReactNativeAudioStreaming.a in Frameworks */,
 				17DFFE991F9CC1F500EE14F5 /* libStreamingKit.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -512,6 +520,14 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+		176C8F171F9FBD54001C74B8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				176C8F3D1F9FBD55001C74B8 /* libReactNativeAudioStreaming.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		17DFFE701F9CC15300EE14F5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -549,6 +565,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				176C8F161F9FBD54001C74B8 /* ReactNativeAudioStreaming.xcodeproj */,
 				17DFFE6F1F9CC15300EE14F5 /* Pods.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -772,6 +789,10 @@
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
+				{
+					ProductGroup = 176C8F171F9FBD54001C74B8 /* Products */;
+					ProjectRef = 176C8F161F9FBD54001C74B8 /* ReactNativeAudioStreaming.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -894,6 +915,13 @@
 			fileType = archive.ar;
 			path = "libdouble-conversion.a";
 			remoteRef = 175D995B1F9B9B0300E367F0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		176C8F3D1F9FBD55001C74B8 /* libReactNativeAudioStreaming.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeAudioStreaming.a;
+			remoteRef = 176C8F3C1F9FBD55001C74B8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		17DFFE751F9CC15300EE14F5 /* libPods-ReactNativeAudioStreaming.a */ = {
