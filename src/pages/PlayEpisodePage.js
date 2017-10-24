@@ -26,7 +26,9 @@ import { connect } from 'react-redux';
 import  * as Pods from '../actions/pods';
 
 import CheckoutFooter from '../components/CheckoutFooter';
-import { Player } from 'react-native-audio-streaming';
+import { Player, ReactNativeAudioStreaming } from 'react-native-audio-streaming';
+
+const url = "http://rss.art19.com/episodes/95fe892c-1309-421a-be21-7297b0698dd1.mp3";
 
 class PlayEpisodePage extends Component {
     static navigationOptions = {
@@ -38,15 +40,18 @@ class PlayEpisodePage extends Component {
 
   }
 
-  componentWillMount() {
-
+  componentDidMount() {
+    ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+    setTimeout(() => {
+      ReactNativeAudioStreaming.stop();
+    }, 10000)
   }
 
   render() {
 
     return (
       <View style={styles.container}>
-         <Player url={"http://lacavewebradio.chickenkiller.com:8000/stream.mp3"} />
+
       </View>
     );
   }
@@ -97,7 +102,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  console.log("state!!!!!", state);
   const { pods } = state;
   return {
     pod: pods && pods[1]
