@@ -41,10 +41,11 @@ class PlayEpisodePage extends Component {
   }
 
   componentDidMount() {
+    console.log("ReactNativeAudioStreaming!!!!!!!!!!!!!!!!!!", ReactNativeAudioStreaming)
     ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
-    setTimeout(() => {
-      ReactNativeAudioStreaming.stop();
-    }, 10000)
+    // setTimeout(() => {
+    //   ReactNativeAudioStreaming.stop();
+    // }, 10000)
   }
 
   render() {
