@@ -1,5 +1,6 @@
 import Sound from 'react-native-sound';
 import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
+import isObject from 'lodash/isObject';
 
 class LocalSound {
     constructor() {
@@ -62,8 +63,20 @@ export default class AudioControls {
         return this.isStreaming ? this.streamingAudio : this.localAudio;
     }
 
-    play() {
-        this.player().play();
+    play(opt) {
+        if (!opt) {
+            throw('AudioControls.js play function: opt is required');
+        }
+
+        const audioLocation = opt;
+        if (opt && isObject(opt)) {
+            this.isStreaming = opt.isStreaming ? opt.isStreaming : this.isStreaming;
+            audioLocation = opt.audio;
+        } else if (opt.match(/^http:\/\//)) {
+            this.isStreaming = true
+        }
+
+        this.player(audioLocation).play();
     }
 
     pause() {
