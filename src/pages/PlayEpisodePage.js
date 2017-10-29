@@ -19,6 +19,8 @@ import {
 
 // import Moment from 'moment';
 
+var Sound = require('react-native-sound');
+
 import map from 'lodash/map';
 
 import { bindActionCreators } from 'redux';
@@ -29,6 +31,15 @@ import CheckoutFooter from '../components/CheckoutFooter';
 import { Player, ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 
 const url = "http://rss.art19.com/episodes/95fe892c-1309-421a-be21-7297b0698dd1.mp3";
+
+var whoosh = new Sound('whoosh.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    console.log('failed to load the sound', error);
+    return;
+  }
+  // loaded successfully
+  console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+});
 
 class PlayEpisodePage extends Component {
     static navigationOptions = {
@@ -42,7 +53,17 @@ class PlayEpisodePage extends Component {
 
   componentDidMount() {
     console.log("ReactNativeAudioStreaming!!!!!!!!!!!!!!!!!!", ReactNativeAudioStreaming)
-    ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+    // ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+    whoosh.play((success) => {
+      if (success) {
+        console.log('successfully finished playing');
+      } else {
+        console.log('playback failed due to audio decoding errors');
+        // reset the player to its uninitialized state (android only)
+        // this is the only option to recover after an error occured and use the player again
+        whoosh.reset();
+      }
+    });
     // setTimeout(() => {
     //   ReactNativeAudioStreaming.stop();
     // }, 10000)
