@@ -1,6 +1,9 @@
 import Sound from 'react-native-sound';
 import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import isUndefined from 'lodash/isUndefined';
+
 
 class LocalSound {
     constructor() {
@@ -25,8 +28,24 @@ class LocalSound {
         this.current.stop();
     }
 
+    forwards(seconds) {
+        this.current.goForward(seconds);
+    }
+
+    back(seconds) {
+        this.current.goBack(seconds);
+    }
+
     resume() {
-        this.current.resume();
+        this.current.play();
+    }
+
+    seek(seconds) {
+        // this.current.seekToTime(seconds)
+    }
+
+    status(func) {
+        // this.current.getStatus(func)
     }
 }
 
@@ -36,7 +55,8 @@ class StreamingSound {
     }
 
    play(url) {
-        current.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+       console.log('ReactNativeAudioStreaming@@@@@@@@@@@@@@@@@@@@@@@@', ReactNativeAudioStreaming)
+        ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
     }
 
     pause() {
@@ -47,16 +67,46 @@ class StreamingSound {
         this.current.stop();
     }
 
+    forwards(seconds) {
+        console.log("forards&&&&&&&&&&&&&&&&&&&&&&&", seconds)
+        this.current.goForward(seconds);
+    }
+
+    back(seconds) {
+        this.current.goBack(seconds);
+    }
+
     resume() {
         this.current.resume();
+    }
+
+    seek(seconds) {
+        this.current.seekToTime(seconds)
+    }
+
+    status(func) {
+        this.current.getStatus(func)
     }
 }
 
 export default class AudioControls {
-    constructor() {
+    constructor(obj) {
+        this.onStateChange = obj.onStateChange;
         this.isStreaming = false;
         this.streamingAudio = new StreamingSound()
         this.localAudio = new LocalSound()
+        this.playState = {
+            isPlaying: false
+        }
+    }
+
+    updatePlayState(obj) {
+        this.playState = {
+            ...this.playState,
+            ...obj,
+        }
+        this.onStateChange(this.playState)
+        return this.playState;
     }
 
     player() {
@@ -68,22 +118,54 @@ export default class AudioControls {
             throw('AudioControls.js play function: opt is required');
         }
 
-        const audioLocation = opt;
+        let audioLocation = opt;
         if (opt && isObject(opt)) {
-            this.isStreaming = opt.isStreaming ? opt.isStreaming : this.isStreaming;
+            this.isStreaming = !isUndefined(opt.isStreaming) ? opt.isStreaming : this.isStreaming;
             audioLocation = opt.audio;
-        } else if (opt.match(/^http:\/\//)) {
+        } else if (isString(opt) && opt.match(/^http:\/\//)) {
             this.isStreaming = true
         }
 
-        this.player(audioLocation).play();
+        this.player().play(audioLocation);
+        this.updatePlayState({
+            isPlaying: true
+        })
     }
 
     pause() {
         this.player().pause();
+        this.updatePlayState({
+            isPlaying: false
+        })
     }
 
     stop() {
         this.player().stop();
+        this.updatePlayState({
+            isPlaying: false
+        })
+    }
+
+    resume() {
+        this.player().resume();
+        this.updatePlayState({
+            isPlaying: true
+        })
+    }
+
+    forwards(seconds) {
+        this.player().forwards(seconds);
+    }
+
+    back(seconds) {
+        this.player().back(seconds);
+    }
+
+    seek() {
+        this.player().seek();
+    }
+
+    status(func) {
+       this.player().status(func);
     }
 }

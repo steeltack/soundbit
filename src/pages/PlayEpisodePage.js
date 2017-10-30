@@ -6,10 +6,12 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
   AlertIOS,
   ScrollView,
   Animated,
+  Image,
 } from 'react-native';
 
 import {
@@ -19,7 +21,7 @@ import {
 
 // import Moment from 'moment';
 
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 
 import map from 'lodash/map';
 
@@ -27,14 +29,104 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import  * as Pods from '../actions/pods';
 import Me from '../../me.m4a';
+import AudioControls from '../AudioControls';
+import appContent from '../content';
 
-import CheckoutFooter from '../components/CheckoutFooter';
-import { Player, ReactNativeAudioStreaming } from 'react-native-audio-streaming';
+const { assets } = appContent
 
 const url = "http://rss.art19.com/episodes/95fe892c-1309-421a-be21-7297b0698dd1.mp3";
-console.log("one 1")
 
-console.log("one 2")
+class Controls extends Component {
+
+  render() {
+    const {
+      isPlaying,
+      onPressBack,
+      onPressPlay,
+      onPressPause,
+      onPressForwards
+    } = this.props;
+
+    return (
+      <View
+        style={controlStyles.container}
+      >
+        <TouchableWithoutFeedback
+          onPress={onPressBack}
+        >
+          <Image
+            style={controlStyles.skipBackButton}
+            source={require('../../assets/icons/skip.png')}
+          />
+        </TouchableWithoutFeedback>
+
+        { !isPlaying
+          ? <TouchableWithoutFeedback
+              onPress={onPressPlay}
+            >
+              <Image
+
+                style={controlStyles.playButton}
+                source={require('../../assets/icons/play.png')}
+              />
+            </TouchableWithoutFeedback>
+          : <TouchableWithoutFeedback
+              onPress={onPressPause}
+            >
+              <Image
+                style={controlStyles.pauseButton}
+                source={require('../../assets/icons/pause.png')}
+              />
+            </TouchableWithoutFeedback>
+        }
+        <TouchableWithoutFeedback
+          onPress={onPressForwards}
+        >
+          <Image
+            style={controlStyles.skipForwardsButton}
+            source={require('../../assets/icons/skip.png')}
+          />
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+}
+
+const controlStyles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '15%',
+    borderTopWidth: 1,
+    borderTopColor: '#aaa'
+  },
+  playButton: {
+    height: 50,
+    width: 50
+  },
+  pauseButton: {
+    height: 50,
+    width: 50
+  },
+  hidden: {
+    display: 'none'
+  },
+  skipBackButton: {
+    height: 50,
+    width: 50,
+    transform: [{scaleX: -1}]
+  },
+  skipForwardsButton: {
+    height: 50,
+    width: 50
+  }
+})
 
 class PlayEpisodePage extends Component {
     static navigationOptions = {
@@ -43,46 +135,47 @@ class PlayEpisodePage extends Component {
 
   constructor() {
     super()
-
+    this.state = {
+      isPlaying: false,
+      isFirstPlay: true
+    }
   }
 
   componentDidMount() {
-    console.log("mounted!!!!")
-    console.log("mounted", Sound)
-    var whoosh = new Sound(Me, (error) => {
-       if (error) {
-                console.log('failed to load the sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', error);
-            } else {
-              console.log('play@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                whoosh.play(); // have to put the call to play() in the onload callback
-            }
+    this.audioControls = new AudioControls({
+      onStateChange: state => this.setState({
+        isPlaying: state.isPlaying,
+        isFirstPlay: false
+      })
     });
 
-    // ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
-    // whoosh.play((success) => {
-    //   if (success) {
-    //     console.log('successfully finished playing');
-    //   } else {
-    //     console.log('playback failed due to audio decoding errors');
-    //     // reset the player to its uninitialized state (android only)
-    //     // this is the only option to recover after an error occured and use the player again
-    //     // whoosh.reset();
-    //   }
-    // });
-    // setTimeout(() => {
-    //   ReactNativeAudioStreaming.stop();
-    // }, 10000)
+    setInterval(() => {
+      this.audioControls.status(status => {
+        console.log('status!!!!!!!!!!!!!!!', status)
+      })
+    }, 1000)
   }
 
   render() {
-    console.log("render", {})
-    const yes = 'yes'
+    const {
+      isFirstPlay,
+      isPlaying
+    } = this.state;
+
     return (
       <View style={styles.container}>
-        <Text
-          style={{top: '10%'}}
-          onPress={() => console.log('yah!!', yes)}
-        >hello</Text>
+        <Controls
+          isPlaying={isPlaying}
+          onPressBack={() => this.audioControls.back(15)}
+          onPressPlay={() => {
+              isFirstPlay
+                ? this.audioControls.play(url)
+                : this.audioControls.resume();
+            }
+          }
+          onPressPause={() => this.audioControls.pause()}
+          onPressForwards={() => this.audioControls.forwards(15)}
+        />
       </View>
     );
   }
