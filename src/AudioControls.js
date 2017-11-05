@@ -245,11 +245,27 @@ export default class AudioControls {
         this.player().back(seconds);
     }
 
-    seek() {
-        this.player().seek();
+    seek(seconds) {
+        this.player().seek(seconds);
+        this.updatePlayState({
+            progress: seconds
+        })
     }
 
     status(func) {
        this.player().status(func);
+    }
+
+    get fractionComplete() {
+        const { progress, duration } = this.playState;
+        return (progress / duration ) || 0
+    }
+
+    fractionToProgress(percent) {
+        const { duration } = this.playState;
+        if (!duration) {
+            return 0;
+        }
+        return duration * percent;
     }
 }

@@ -19,6 +19,8 @@ import {
   Avatar
 } from 'react-native-material-ui';
 
+import Slider from "react-native-slider";
+
 // import Moment from 'moment';
 
 // import Sound from 'react-native-sound';
@@ -36,57 +38,80 @@ const { assets } = appContent
 
 const url = "http://rss.art19.com/episodes/95fe892c-1309-421a-be21-7297b0698dd1.mp3";
 
-class Controls extends Component {
+class DurationSlider extends Component {
+  render() {
+     <View
+        style={controlStyles.container}
+      >
+        <Slider
+          value={this.state.value}
+          onValueChange={value => this.setState({ value })}
+        />
+      </View>
+  }
+}
 
+class Controls extends Component {
   render() {
     const {
       isPlaying,
       onPressBack,
       onPressPlay,
       onPressPause,
-      onPressForwards
+      onPressForwards,
+      onSeek,
+      progress,
     } = this.props;
 
     return (
       <View
         style={controlStyles.container}
       >
-        <TouchableWithoutFeedback
-          onPress={onPressBack}
+         <Slider
+          value={progress}
+          style={controlStyles.slider}
+          onValueChange={onSeek}
+        />
+        <View
+          style={controlStyles.controlsContainer}
         >
-          <Image
-            style={controlStyles.skipBackButton}
-            source={require('../../assets/icons/skip.png')}
-          />
-        </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={onPressBack}
+          >
+            <Image
+              style={controlStyles.skipBackButton}
+              source={require('../../assets/icons/skip.png')}
+            />
+          </TouchableWithoutFeedback>
 
-        { !isPlaying
-          ? <TouchableWithoutFeedback
-              onPress={onPressPlay}
-            >
-              <Image
+          { !isPlaying
+            ? <TouchableWithoutFeedback
+                onPress={onPressPlay}
+              >
+                <Image
 
-                style={controlStyles.playButton}
-                source={require('../../assets/icons/play.png')}
-              />
-            </TouchableWithoutFeedback>
-          : <TouchableWithoutFeedback
-              onPress={onPressPause}
-            >
-              <Image
-                style={controlStyles.pauseButton}
-                source={require('../../assets/icons/pause.png')}
-              />
-            </TouchableWithoutFeedback>
-        }
-        <TouchableWithoutFeedback
-          onPress={onPressForwards}
-        >
-          <Image
-            style={controlStyles.skipForwardsButton}
-            source={require('../../assets/icons/skip.png')}
-          />
-        </TouchableWithoutFeedback>
+                  style={controlStyles.playButton}
+                  source={require('../../assets/icons/play.png')}
+                />
+              </TouchableWithoutFeedback>
+            : <TouchableWithoutFeedback
+                onPress={onPressPause}
+              >
+                <Image
+                  style={controlStyles.pauseButton}
+                  source={require('../../assets/icons/pause.png')}
+                />
+              </TouchableWithoutFeedback>
+          }
+          <TouchableWithoutFeedback
+            onPress={onPressForwards}
+          >
+            <Image
+              style={controlStyles.skipForwardsButton}
+              source={require('../../assets/icons/skip.png')}
+            />
+          </TouchableWithoutFeedback>
+        </View>
       </View>
     )
   }
@@ -94,17 +119,20 @@ class Controls extends Component {
 
 const controlStyles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    height: '30%',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: '15%',
     borderTopWidth: 1,
     borderTopColor: '#aaa'
+  },
+  controlsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: '80%',
   },
   playButton: {
     height: 50,
@@ -125,6 +153,12 @@ const controlStyles = StyleSheet.create({
   skipForwardsButton: {
     height: 50,
     width: 50
+  },
+  slider: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    width: '80%',
+    alignSelf: 'center'
   }
 })
 
@@ -145,34 +179,39 @@ class PlayEpisodePage extends Component {
     this.audioControls = new AudioControls({
       onStateChange: state => {
         console.log("state", state)
+
         this.setState({
-          isPlaying: state.isPlaying,
-          isFirstPlay: false
+          ...state,
+          isFirstPlay: false,
         })
       }
     });
-
-    // setInterval(() => {
-    //   this.audioControls.status(status => {
-    //     console.log('status!!!!!!!!!!!!!!!', status)
-    //   })
-    // }, 1000)
   }
 
   render() {
     const {
       isFirstPlay,
-      isPlaying
+      isPlaying,
+      progress,
+      duration,
     } = this.state;
 
     return (
       <View style={styles.container}>
+        <Text>{progress}</Text>
         <Controls
+          progress={this.audioControls && this.audioControls.fractionComplete}
           isPlaying={isPlaying}
           onPressBack={() => this.audioControls.back(15)}
+          onSeek={value => {
+              const progress = this.audioControls.fractionToProgress(value)
+              this.setState({progress})
+              this.audioControls.seek(progress);
+            }
+          }
           onPressPlay={() => {
               isFirstPlay
-                ? this.audioControls.play(url)
+                ? this.audioControls.play(Me)
                 : this.audioControls.resume();
             }
           }
