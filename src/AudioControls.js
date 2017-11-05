@@ -10,12 +10,12 @@ class LocalSound {
         this.current = null;
     }
 
-    play(url) {
+    play(url, onEnd) {
         this.current = new Sound(url, (error) => {
             if (error) {
                 console.log('failed to load the sound', error);
             } else {
-                this.current.play();
+                this.current.play(onEnd);
             }
         });
     }
@@ -76,7 +76,7 @@ class LocalSound {
          if (!this.current) {
             return;
         }
-        this.current.getCurrentTime(tiprogressme => {
+        this.current.getCurrentTime(progress => {
             const duration = this.current.getDuration();
 
             // mirroring react-native-streaming status function return values
@@ -94,7 +94,6 @@ class StreamingSound {
     }
 
    play(url) {
-       console.log('ReactNativeAudioStreaming@@@@@@@@@@@@@@@@@@@@@@@@', ReactNativeAudioStreaming)
         ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
     }
 
@@ -107,7 +106,6 @@ class StreamingSound {
     }
 
     forwards(seconds) {
-        console.log("forards&&&&&&&&&&&&&&&&&&&&&&&", seconds)
         this.current && this.current.goForward(seconds);
     }
 
@@ -124,7 +122,10 @@ class StreamingSound {
     }
 
     status(func) {
-        this.current && this.current.getStatus(func)
+        this.current && this.current.getStatus((error, status) => {
+            func(status);
+        })
+
     }
 }
 
@@ -146,6 +147,7 @@ export default class AudioControls {
             ...this.playState,
             ...obj,
         }
+        this.progressCheck();
         this.onStateChange(this.playState)
         return this.playState;
     }
@@ -171,10 +173,47 @@ export default class AudioControls {
             this.isStreaming = true
         }
 
-        this.player().play(audioLocation);
+        // only works for localSound
+        const onEnd = () => {
+            this.updatePlayState({
+                isPlaying: false
+            })
+        }
+
+        this.player().play(audioLocation, onEnd) ;
         this.updatePlayState({
             isPlaying: true
         })
+    }
+
+    progressCheck(func) {
+        if (this.progressCheckInterval || !this.playState.isPlaying) {
+            return;
+        }
+
+        // this is to check if the player has stopped playing.
+        let lastProgress = null;
+        let isPlaying = null;
+
+        this.progressCheckInterval = setInterval(() => {
+            if (!this.playState.isPlaying) {
+                clearInterval(this.progressCheckInterval)
+                this.progressCheckInterval = null;
+            }
+
+            this.player().status(status => {
+                let isPlaying = this.playState.isPlaying;
+                if (lastProgress === status.progress) {
+                    isPlaying = false;
+                }
+
+                lastProgress = status.progress;
+                this.updatePlayState({
+                    ...status,
+                    isPlaying
+                })
+            })
+        }, 1000);
     }
 
     pause() {

@@ -143,17 +143,20 @@ class PlayEpisodePage extends Component {
 
   componentDidMount() {
     this.audioControls = new AudioControls({
-      onStateChange: state => this.setState({
-        isPlaying: state.isPlaying,
-        isFirstPlay: false
-      })
+      onStateChange: state => {
+        console.log("state", state)
+        this.setState({
+          isPlaying: state.isPlaying,
+          isFirstPlay: false
+        })
+      }
     });
 
-    setInterval(() => {
-      this.audioControls.status(status => {
-        console.log('status!!!!!!!!!!!!!!!', status)
-      })
-    }, 1000)
+    // setInterval(() => {
+    //   this.audioControls.status(status => {
+    //     console.log('status!!!!!!!!!!!!!!!', status)
+    //   })
+    // }, 1000)
   }
 
   render() {
@@ -169,9 +172,8 @@ class PlayEpisodePage extends Component {
           onPressBack={() => this.audioControls.back(15)}
           onPressPlay={() => {
               isFirstPlay
-                ? this.audioControls.play(Me)
+                ? this.audioControls.play(url)
                 : this.audioControls.resume();
-                console.log('player^^^^^^^^^', this.audioControls.player());
             }
           }
           onPressPause={() => this.audioControls.pause()}
