@@ -21,31 +21,70 @@ class LocalSound {
     }
 
     pause() {
-        this.current.pause();
+        this.current && this.current.pause();
     }
 
     stop() {
-        this.current.stop();
+        this.current && this.current.stop();
     }
 
     forwards(seconds) {
-        this.current.goForward(seconds);
+        if (!this.current) {
+            return;
+        }
+        this.current.getCurrentTime(time => {
+            this.current.setCurrentTime(time + seconds);
+        });
     }
 
     back(seconds) {
-        this.current.goBack(seconds);
+        if (!this.current) {
+            return;
+        }
+          this.current.getCurrentTime(time => {
+            this.current.setCurrentTime(time + seconds);
+        });
     }
 
+
+
     resume() {
-        this.current.play();
+        this.current && this.current.play();
     }
 
     seek(seconds) {
-        // this.current.seekToTime(seconds)
+        this.current.setCurrentTime(seconds)
+    }
+
+    getDuration() {
+        this.current.getDuration()
+    }
+
+    setSpeed(value) {
+        this.current.setSpeed(value)
+    }
+
+    getVolume() {
+        this.current.getVolume()
+    }
+
+    setVolume(value) {
+        this.current.setVolume(value)
     }
 
     status(func) {
-        // this.current.getStatus(func)
+         if (!this.current) {
+            return;
+        }
+        this.current.getCurrentTime(tiprogressme => {
+            const duration = this.current.getDuration();
+
+            // mirroring react-native-streaming status function return values
+            func({
+                progress,
+                duration,
+            })
+        });
     }
 }
 
@@ -60,32 +99,32 @@ class StreamingSound {
     }
 
     pause() {
-        this.current.pause();
+        this.current && this.current.pause();
     }
 
     stop() {
-        this.current.stop();
+        this.current && this.current.stop();
     }
 
     forwards(seconds) {
         console.log("forards&&&&&&&&&&&&&&&&&&&&&&&", seconds)
-        this.current.goForward(seconds);
+        this.current && this.current.goForward(seconds);
     }
 
     back(seconds) {
-        this.current.goBack(seconds);
+        this.current && this.current.goBack(seconds);
     }
 
     resume() {
-        this.current.resume();
+        this.current && this.current.resume();
     }
 
     seek(seconds) {
-        this.current.seekToTime(seconds)
+        this.current && this.current.seekToTime(seconds)
     }
 
     status(func) {
-        this.current.getStatus(func)
+        this.current && this.current.getStatus(func)
     }
 }
 
@@ -96,7 +135,9 @@ export default class AudioControls {
         this.streamingAudio = new StreamingSound()
         this.localAudio = new LocalSound()
         this.playState = {
-            isPlaying: false
+            isPlaying: false,
+            duration: null,
+            currentTime: null,
         }
     }
 
@@ -109,11 +150,15 @@ export default class AudioControls {
         return this.playState;
     }
 
+
+
     player() {
         return this.isStreaming ? this.streamingAudio : this.localAudio;
     }
 
     play(opt) {
+        // set duration in this.playstate
+        // update playstate when playing
         if (!opt) {
             throw('AudioControls.js play function: opt is required');
         }

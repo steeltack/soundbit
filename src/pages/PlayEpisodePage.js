@@ -169,8 +169,9 @@ class PlayEpisodePage extends Component {
           onPressBack={() => this.audioControls.back(15)}
           onPressPlay={() => {
               isFirstPlay
-                ? this.audioControls.play(url)
+                ? this.audioControls.play(Me)
                 : this.audioControls.resume();
+                console.log('player^^^^^^^^^', this.audioControls.player());
             }
           }
           onPressPause={() => this.audioControls.pause()}
