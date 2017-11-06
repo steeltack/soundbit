@@ -61,17 +61,30 @@ class Controls extends Component {
       onPressForwards,
       onSeek,
       progress,
+      progressFormatted,
+      durationFormatted,
+      remainingFormatted
     } = this.props;
 
     return (
       <View
         style={controlStyles.container}
       >
-         <Slider
-          value={progress}
-          style={controlStyles.slider}
-          onValueChange={onSeek}
-        />
+        <View
+          style={controlStyles.sliderContainer}
+        >
+          <Slider
+            value={progress}
+            style={controlStyles.slider}
+            onValueChange={onSeek}
+          />
+          <View
+            style={controlStyles.durationContainer}
+          >
+            <Text>{progressFormatted}</Text>
+            <Text>-{remainingFormatted}</Text>
+          </View>
+        </View>
         <View
           style={controlStyles.controlsContainer}
         >
@@ -119,8 +132,9 @@ class Controls extends Component {
 
 const controlStyles = StyleSheet.create({
   container: {
-    height: '30%',
+    height: '28%',
     position: 'absolute',
+    paddingTop: 20,
     bottom: 0,
     left: 0,
     right: 0,
@@ -132,7 +146,17 @@ const controlStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: '80%',
+    height: '50%',
+  },
+  sliderContainer: {
+    width: '75%',
+    alignSelf: 'center',
+    height: '30%',
+  },
+  durationContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   playButton: {
     height: 50,
@@ -155,10 +179,7 @@ const controlStyles = StyleSheet.create({
     width: 50
   },
   slider: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    width: '80%',
-    alignSelf: 'center'
+
   }
 })
 
@@ -194,13 +215,18 @@ class PlayEpisodePage extends Component {
       isPlaying,
       progress,
       duration,
+      progressFormatted,
+      durationFormatted,
+      remainingFormatted
     } = this.state;
 
     return (
       <View style={styles.container}>
-        <Text>{progress}</Text>
         <Controls
           progress={this.audioControls && this.audioControls.fractionComplete}
+          progressFormatted={progressFormatted}
+          durationFormatted={durationFormatted}
+          remainingFormatted={remainingFormatted}
           isPlaying={isPlaying}
           onPressBack={() => this.audioControls.back(15)}
           onSeek={value => {
@@ -211,7 +237,7 @@ class PlayEpisodePage extends Component {
           }
           onPressPlay={() => {
               isFirstPlay
-                ? this.audioControls.play(Me)
+                ? this.audioControls.play(url)
                 : this.audioControls.resume();
             }
           }

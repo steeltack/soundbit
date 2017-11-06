@@ -3,7 +3,14 @@ import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import isUndefined from 'lodash/isUndefined';
+import Moment from 'moment';
 
+
+const streamingPlayStates = {
+    stopped: 'STOPPED',
+    paused: 'PAUSED',
+    playing: 'PLAYING',
+}
 
 class LocalSound {
     constructor() {
@@ -192,7 +199,7 @@ export default class AudioControls {
         }
 
         // this is to check if the player has stopped playing.
-        let lastProgress = null;
+        // let lastProgress = null;
         let isPlaying = null;
 
         this.progressCheckInterval = setInterval(() => {
@@ -201,19 +208,31 @@ export default class AudioControls {
                 this.progressCheckInterval = null;
             }
 
-            this.player().status(status => {
-                let isPlaying = this.playState.isPlaying;
-                if (lastProgress === status.progress) {
-                    isPlaying = false;
-                }
+            this.updateStatus();
 
-                lastProgress = status.progress;
-                this.updatePlayState({
-                    ...status,
-                    isPlaying
-                })
-            })
         }, 1000);
+    }
+
+    /**
+     * Sourced from:
+     * https://stackoverflow.com/questions/3733227/javascript-seconds-to-minutes-and-seconds
+     */
+    formatTime(time) {
+        time = Math.round(time)
+         var hrs = ~~(time / 3600);
+        var mins = ~~((time % 3600) / 60);
+        var secs = time % 60;
+
+        // Output like "1:01" or "4:03:59" or "123:03:59"
+        var ret = "";
+
+        if (hrs > 0) {
+            ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+        }
+
+        ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+        ret += "" + secs;
+        return ret;
     }
 
     pause() {
@@ -239,21 +258,51 @@ export default class AudioControls {
 
     forwards(seconds) {
         this.player().forwards(seconds);
+        this.updateStatus();
     }
 
     back(seconds) {
         this.player().back(seconds);
+        this.updateStatus();
     }
 
     seek(seconds) {
-        this.player().seek(seconds);
+        this.player().seek(seconds || 0);
         this.updatePlayState({
-            progress: seconds
+            progress: seconds || 0
         })
     }
 
     status(func) {
        this.player().status(func);
+    }
+
+    updateStatus() {
+        this.player().status(status => {
+                let isPlaying = this.playState.isPlaying;
+
+                const isStatus = status.status;
+                const isStopped = isStatus && status.status === streamingPlayStates.stopped
+                if (isStopped) {
+                    isPlaying = false;
+                }
+
+                const {
+                    duration,
+                    progress
+                } = status;
+
+                const remaining = duration - progress;
+
+                this.updatePlayState({
+                    ...status,
+                    remaining,
+                    progressFormatted: this.formatTime(progress),
+                    durationFormatted: this.formatTime(duration),
+                    remainingFormatted: this.formatTime(remaining),
+                    isPlaying
+                })
+            })
     }
 
     get fractionComplete() {
