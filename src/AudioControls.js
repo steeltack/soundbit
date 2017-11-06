@@ -3,7 +3,6 @@ import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import isUndefined from 'lodash/isUndefined';
-import Moment from 'moment';
 
 
 const streamingPlayStates = {
@@ -49,7 +48,7 @@ class LocalSound {
             return;
         }
           this.current.getCurrentTime(time => {
-            this.current.setCurrentTime(time + seconds);
+            this.current.setCurrentTime(time - seconds);
         });
     }
 
@@ -60,7 +59,11 @@ class LocalSound {
     }
 
     seek(seconds) {
-        this.current.setCurrentTime(seconds)
+        if (!this.current) {
+            return;
+        }
+
+        this.current.setCurrentTime(seconds);
     }
 
     getDuration() {
@@ -125,7 +128,11 @@ class StreamingSound {
     }
 
     seek(seconds) {
-        this.current && this.current.seekToTime(seconds)
+        if (!this.current) {
+            return;
+        }
+
+        this.current && this.current.seekToTime(seconds || 0)
     }
 
     status(func) {
@@ -182,6 +189,7 @@ export default class AudioControls {
 
         // only works for localSound
         const onEnd = () => {
+            console.log("onend@@@@@@@@@@@@@@@@@@@@@")
             this.updatePlayState({
                 isPlaying: false
             })
@@ -267,10 +275,17 @@ export default class AudioControls {
     }
 
     seek(seconds) {
+        const {
+            duration,
+        } = this.playState;
+
         this.player().seek(seconds || 0);
-        this.updatePlayState({
+        const formatedDuration = this.formatDuration({
+            duration,
             progress: seconds || 0
         })
+
+        this.updatePlayState(formatedDuration);
     }
 
     status(func) {
@@ -281,6 +296,7 @@ export default class AudioControls {
         this.player().status(status => {
                 let isPlaying = this.playState.isPlaying;
 
+                // This is only for react native streaming which provides a 'status'
                 const isStatus = status.status;
                 const isStopped = isStatus && status.status === streamingPlayStates.stopped
                 if (isStopped) {
@@ -292,17 +308,30 @@ export default class AudioControls {
                     progress
                 } = status;
 
-                const remaining = duration - progress;
+                const durationFormatted = this.formatDuration(status)
 
                 this.updatePlayState({
                     ...status,
-                    remaining,
-                    progressFormatted: this.formatTime(progress),
-                    durationFormatted: this.formatTime(duration),
-                    remainingFormatted: this.formatTime(remaining),
+                    ...durationFormatted,
                     isPlaying
                 })
             })
+    }
+
+    formatDuration(obj) {
+        const {
+            progress,
+            duration
+        } = obj;
+        const remaining = duration - progress;
+
+        return {
+            remaining,
+            progressFormatted: this.formatTime(progress),
+            durationFormatted: this.formatTime(duration),
+            remainingFormatted: this.formatTime(remaining),
+            ...obj,
+        }
     }
 
     get fractionComplete() {

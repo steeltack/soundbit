@@ -74,7 +74,7 @@ class Controls extends Component {
           style={controlStyles.sliderContainer}
         >
           <Slider
-            value={progress}
+            value={progress || 0}
             style={controlStyles.slider}
             onValueChange={onSeek}
           />
@@ -152,6 +152,7 @@ const controlStyles = StyleSheet.create({
     width: '75%',
     alignSelf: 'center',
     height: '30%',
+    marginBottom: 10,
   },
   durationContainer: {
     display: 'flex',
